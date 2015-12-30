@@ -17,6 +17,7 @@
 #import "K_LineGraphController.h"
 #import "DropdownMenuController.h"
 #import <MBProgressHUD/MBProgressHUD.h>
+#import "Reachability.h"
 @interface TimeLineController ()
 <
 UIPopoverPresentationControllerDelegate,
@@ -26,6 +27,7 @@ DropdownMenuControllerDelegate
 @property (nonatomic, strong) DropdownMenuController *popoVerMenu;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) MBProgressHUD *mbProgressHUD;
+@property (nonatomic, strong) Reachability *reach;
 @end
 
 @implementation TimeLineController
@@ -39,8 +41,55 @@ DropdownMenuControllerDelegate
     UIBarButtonItem *kLine = [[UIBarButtonItem alloc]initWithTitle:@"K线图" style:UIBarButtonItemStylePlain target:self action:@selector(gotoKlineVC)];
     self.navigationItem.rightBarButtonItem = kLine;
     
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(downloadImage) userInfo:nil repeats:YES];
     self.mbProgressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+    self.reach = [Reachability reachabilityWithHostName:@"www.apple.com"];
+    [self.reach startNotifier];
+}
+#pragma mark - 网络判断
+-(BOOL)isConnectionAvailable{
+    BOOL isExistenceNetwork = YES;
+    switch ([self.reach currentReachabilityStatus]) {
+        case NotReachable:
+            isExistenceNetwork = NO;
+            break;
+        case ReachableViaWiFi:
+            isExistenceNetwork = YES;
+            break;
+        case ReachableViaWWAN:
+            isExistenceNetwork = YES;
+            break;
+    }
+    return isExistenceNetwork;
+}
+#pragma mark - 网络检查
+- (void)reachabilityChanged:(NSNotification *)note
+{
+    Reachability* curReach = [note object];
+    NSParameterAssert([curReach isKindOfClass:[Reachability class]]);
+    [self updateInterfaceWithReachability:curReach];
+}
+- (void)updateInterfaceWithReachability:(Reachability *)reachability
+{
+    if (reachability == self.reach) {
+        [self changeState];
+    }
+}
+- (void)changeState{
+    if (![self isConnectionAvailable]) {
+        //暂停定时器
+        NSDate *date = [NSDate distantFuture];
+        [self.timer setFireDate:date];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"当前网络不可用，请检查网络连接";  //提示的内容
+        [hud hide:YES afterDelay:3];
+    } else {
+        //开始定时器
+        NSDate *date = [NSDate distantPast];
+        [self.timer setFireDate:date];
+    }
 }
 #pragma mark - 生命周期
 //视图将要显示时候
@@ -108,6 +157,14 @@ DropdownMenuControllerDelegate
          *  http://my.oschina.net/u/2340880/blog/398552?fromerr=sAJ1ndvB
          */
     }
+    if ([self isConnectionAvailable]) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(downloadImage) userInfo:nil repeats:YES];
+    } else {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"当前网络不可用，请检查网络连接";  //提示的内容
+        [hud hide:YES afterDelay:3];
+    }
 
 }
 //视图将要消失的时候暂停
@@ -148,10 +205,6 @@ static NSInteger count=1;
 - (void)DropdownMenuController:(DropdownMenuController *)dropdownMenu withIndex:(NSUInteger)index {
     NSString * storyboardName = @"Main";
     NSString * viewControllerID = @"kLineVC";
-    /**
-     *  Name则是自己起的，在.storyboard前面的名字，如果不动，则默认是Main，而且不需要添加文件的扩展名，如果加了，就会报错；
-     *  bundle：这个参数包含storyboard的文件以及和它相关的资源，如果为空，则会调用当前程序的main bundle
-     */
     UIStoryboard * storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
     K_LineGraphController *klineVC = (K_LineGraphController *)[storyboard instantiateViewControllerWithIdentifier:viewControllerID];
     klineVC.stock = self.stock;

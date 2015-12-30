@@ -30,7 +30,7 @@
         } else {
             NSLog(@"数据库打开成功,路径是%@",kDataBasePath);
         }
-        
+        //integer类型 0开头的数字会默认省略
         NSString *sqlStr = [NSString stringWithFormat: @"create table if not exists %@ (stockName text primary key,stockHouse text,stockCode text,todayPrice integer,yesterDayPrice integer,currentPrice integer,todayHighestPrice integer,todayLowestPrice integer,amplitude integer,price integer,collect boolearn)",kStock];
         if (![self.dataBase executeUpdate:sqlStr]) {
             NSLog(@"创建%@表失败,SQL语句是%@",kStock,sqlStr);

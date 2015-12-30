@@ -19,6 +19,7 @@
 #import "DataBaseManager.h"
 #import "TimeLineController.h"
 #import <MBProgressHUD/MBProgressHUD.h>
+#import "Reachability.h"
 @interface DetailStockController ()
 @property (weak, nonatomic) IBOutlet UILabel *stockHouseLabel;
 @property (weak, nonatomic) IBOutlet UIButton *likeBtn;
@@ -37,6 +38,7 @@
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) Stock *newsStock;///<更新之后的值,new是系统关键值 textLabel 也是系统关键字
 @property (nonatomic, strong) MBProgressHUD *mbProgressHUD;
+@property (nonatomic, strong) Reachability *reach;
 
 @end
 
@@ -48,6 +50,53 @@
     [self downloadData];
     [self timeline];
     self.mbProgressHUD = [MBProgressHUD showHUDAddedTo:self.imageView animated:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+    self.reach = [Reachability reachabilityWithHostName:@"www.apple.com"];
+    [self.reach startNotifier];
+}
+#pragma mark - 网络判断
+-(BOOL)isConnectionAvailable{
+    BOOL isExistenceNetwork = YES;
+    switch ([self.reach currentReachabilityStatus]) {
+        case NotReachable:
+            isExistenceNetwork = NO;
+            break;
+        case ReachableViaWiFi:
+            isExistenceNetwork = YES;
+            break;
+        case ReachableViaWWAN:
+            isExistenceNetwork = YES;
+            break;
+    }
+    return isExistenceNetwork;
+}
+#pragma mark - 网络检查
+- (void)reachabilityChanged:(NSNotification *)note
+{
+    Reachability* curReach = [note object];
+    NSParameterAssert([curReach isKindOfClass:[Reachability class]]);
+    [self updateInterfaceWithReachability:curReach];
+}
+- (void)updateInterfaceWithReachability:(Reachability *)reachability
+{
+    if (reachability == self.reach) {
+        [self changeState];
+    }
+}
+- (void)changeState{
+    if (![self isConnectionAvailable]) {
+        //暂停定时器
+        NSDate *date = [NSDate distantFuture];
+        [self.timer setFireDate:date];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"当前网络不可用，请检查网络连接";  //提示的内容
+        [hud hide:YES afterDelay:3];
+    } else {
+        //开始定时器
+        NSDate *date = [NSDate distantPast];
+        [self.timer setFireDate:date];
+    }
 }
 #pragma mark - 生命周期
 //视图将显示时候
@@ -73,16 +122,14 @@
     /**
      *  离开界面控制器不暂停定时器 小心一会儿一套房子就没了
      */
-   self.timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(downloadData) userInfo:nil repeats:YES];
-#warning searchBar frame 应该获取当前设备的width   横屏回来searchBar会显示不正常
-    //    [self.searchController.searchBar removeFromSuperview];
-    //    CGRect frame=self.searchController.searchBar.frame;
-    //    CGSize size=frame.size;
-    //    size.width=375;
-    //    frame.size=size;
-    //    self.searchController.searchBar.frame=frame;
-    //    [self.searchControllerView addSubview:self.searchController.searchBar];
-    //    NSLog(@"%f",self.searchControllerView.frame.size.width);
+    if ([self isConnectionAvailable]) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(downloadData) userInfo:nil repeats:YES];
+    } else {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"当前网络不可用，请检查网络连接";  //提示的内容
+        [hud hide:YES afterDelay:3];
+    }
 }
 //开始
 //- (void)viewDidAppear:(BOOL)animated {
@@ -198,6 +245,7 @@ static  NSInteger count=1;
 }
 - (void)showHUDText:(NSString *)text {
     self.mbProgressHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.mbProgressHUD.mode = MBProgressHUDModeText;//设置显示的样式，默认带有菊花
     self.mbProgressHUD.labelText = text;
     [self.mbProgressHUD hide:YES afterDelay:0.5];
 }

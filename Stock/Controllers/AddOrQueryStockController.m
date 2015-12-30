@@ -41,37 +41,14 @@ UISearchResultsUpdating
     self.searchController.dimsBackgroundDuringPresentation = NO;//设置点击搜索控制器的Bar后是否为透明 默认为YES
     self.searchController.hidesNavigationBarDuringPresentation = YES;//设置是否隐藏搜索控制器的Bar 默认为YES
     self.searchController.searchBar.scopeButtonTitles = @[@"上海",@"深圳"];//必须要写此行 设置搜索控制器下方显示搜索类型  @[]表示没有 写参数就相当于一个segment可供搜索的多种样式选择
-    self.searchController.searchBar.placeholder = @"请输入股票名称/代码";
+    self.searchController.searchBar.placeholder = @"请输入股票代码";
 //    [self.searchControllerView addSubview:self.searchController.searchBar];
     self.tableView.tableHeaderView = self.searchController.searchBar;
     
     self.definesPresentationContext = YES; //不加，则在没有点击取消的情况下直接返回会黑屏
 }
 #pragma mark - 生命周期
-//视图将显示时候
-//转屏应该在生命周期里执行
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-//    if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
-//        SEL selector = NSSelectorFromString(@"setOrientation:");
-//        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
-//        [invocation setSelector:selector];
-//        [invocation setTarget:[UIDevice currentDevice]];
-//        int val = UIInterfaceOrientationPortrait;//竖屏
-//        [invocation setArgument:&val atIndex:2];
-//        [invocation invoke];
-//    }
-#warning searchBar frame 应该获取当前设备的width   横屏回来searchBar会显示不正常
-//    [self.searchController.searchBar removeFromSuperview];
-//    self.tableView.tableHeaderView = self.searchController.searchBar;
-    //    CGRect frame=self.searchController.searchBar.frame;
-    //    CGSize size=frame.size;
-    //    size.width=375;
-    //    frame.size=size;
-    //    self.searchController.searchBar.frame=frame;
-//        [self.searchControllerView addSubview:self.searchController.searchBar];
-    //    NSLog(@"%f",self.searchControllerView.frame.size.width);
-}
+
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -83,21 +60,25 @@ UISearchResultsUpdating
 
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-    [self.queryList removeAllObjects];
-    NSLog(@"%@",searchController.searchBar.text);
-    NSString *link;
-    if(searchController.searchBar.selectedScopeButtonIndex==0) {
-        link = [NSString stringWithFormat:@"http://hq.sinajs.cn/list=sh%@",searchController.searchBar.text];
-        [DownLoadManager downloadWithLink:link withStock:^(Stock *stock) {
+    if (searchController.searchBar.text.length==6) {
+        [self.queryList removeAllObjects];
+        NSLog(@"%@",searchController.searchBar.text);
+        NSString *link;
+        if(searchController.searchBar.selectedScopeButtonIndex==0) {
+            link = [NSString stringWithFormat:@"http://hq.sinajs.cn/list=sh%@",searchController.searchBar.text];
+            
+            [DownLoadManager downloadWithLink:link withStock:^(Stock *stock) {
                 [self.queryList addObject:stock];
                 [self.tableView reloadData];
-        }];
-    } else {
-        link =[NSString stringWithFormat:@"http://hq.sinajs.cn/list=sz%@",searchController.searchBar.text];
-        [DownLoadManager downloadWithLink:link withStock:^(Stock *stock) {
+            }];
+        } else {
+            link =[NSString stringWithFormat:@"http://hq.sinajs.cn/list=sz%@",searchController.searchBar.text];
+            [DownLoadManager downloadWithLink:link withStock:^(Stock *stock) {
+                [self alert];
                 [self.queryList addObject:stock];
                 [self.tableView reloadData];
-        }];
+            }];
+        }
     }
     [self.tableView reloadData];
 }

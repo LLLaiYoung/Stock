@@ -10,16 +10,18 @@
  *  显示数据(从数据库读取)->自定义cell
  *  数据的删除
  *  数据的查询
- *  数据自动刷新 (10s) 注意在删除数据的时候需要停止cell的数据加载
+ *  数据自动刷新 (10s) 注意在删除数据的时候需要停止cell的数据加载 没网的时候停止定时器
  *  数据排序(按字段)
+ *
  */
 #import "HomePage.h"
 #import "DownLoadManager.h"
 #import "Stock.h"
-#import "SearchController.h"
 #import "DataBaseManager.h"
 #import "StockCell.h"
 #import "DetailStockController.h"
+#import "Reachability.h"
+#import <MBProgressHUD/MBProgressHUD.h>
 
 @interface HomePage ()
 <
@@ -41,6 +43,7 @@ UITableViewDelegate
 @property (nonatomic, assign,getter=isAsc) BOOL asc;///<是否为升序
 @property (nonatomic, strong) NSMutableArray *updataArray;///<获取数据库的所有对象用于更新数据 因在视图将要显示的时候获取数据库的数据
 @property (nonatomic, strong) NSTimer *timer;///<定时器
+@property (nonatomic, strong) Reachability *reach;///<网络状态
 @end
 
 @implementation HomePage
@@ -64,8 +67,57 @@ UITableViewDelegate
         
         NSLog(@"second launch再次程序启动");
     }
-    
     [self updata];
+    
+#pragma mark - 网络
+    //需要添加SystemConfiguration.framework framework
+    //注册消息通知 监听网络状态
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+    self.reach = [Reachability reachabilityWithHostName:@"www.apple.com"];
+    [self.reach startNotifier];
+}
+#pragma mark - 网络判断
+-(BOOL)isConnectionAvailable{
+    BOOL isExistenceNetwork = YES;
+    switch ([self.reach currentReachabilityStatus]) {
+        case NotReachable:
+            isExistenceNetwork = NO;
+            break;
+        case ReachableViaWiFi:
+            isExistenceNetwork = YES;
+            break;
+        case ReachableViaWWAN:
+            isExistenceNetwork = YES;
+            break;
+    }
+    return isExistenceNetwork;
+}
+#pragma mark - 网络检查
+- (void)reachabilityChanged:(NSNotification *)note
+{
+    Reachability* curReach = [note object];
+    NSParameterAssert([curReach isKindOfClass:[Reachability class]]);
+    [self updateInterfaceWithReachability:curReach];
+}
+- (void)updateInterfaceWithReachability:(Reachability *)reachability
+{
+    if (reachability == self.reach) {
+        [self changeState];
+    }
+}
+- (void)changeState{
+    if (![self isConnectionAvailable]) {
+        //暂停定时器
+        NSDate *date = [NSDate distantFuture];
+        [self.timer setFireDate:date];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"当前网络不可用，请检查网络连接";  //提示的内容
+        [hud hide:YES afterDelay:3];
+    } else {
+        NSDate *date = [NSDate distantPast];
+        [self.timer setFireDate:date];
+    }
 }
 #pragma mark - Updata
 //http://blog.csdn.net/totogo2010/article/details/8016129  iOS多线程编程之Grand Central Dispatch(GCD)介绍和使用
@@ -117,7 +169,15 @@ static NSInteger count=0;
     [super viewWillAppear:animated];
     //获取数据库的所有对象
     self.updataArray = [[[DataBaseManager defaultManager]backAllStock] mutableCopy];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updata) userInfo:nil repeats:YES];
+    //检查网络
+    if ([self isConnectionAvailable]) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updata) userInfo:nil repeats:YES];
+    } else {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"当前网络不可用，请检查网络连接";  //提示的内容
+        [hud hide:YES afterDelay:3];
+    }
     /**
      *  关于iOS 强制转横屏的博客
      *  http://www.cocoachina.com/bbs/read.php?tid=39663
@@ -130,6 +190,7 @@ static NSInteger count=0;
         //http://mobile.51cto.com/hot-431728.htm SEL
         //http://blog.csdn.net/huifeidexin_1/article/details/8608074  NSSelectorFromString
         //http://blog.jobbole.com/45963/  Objective-C的动态提示和技巧
+        //http://www.cocoachina.com/bbs/read.php?tid-52105.html  类方法、实例方法、静态方法（重要）
         //NSSelectorFromString 动态加载实例方法
         SEL selector = NSSelectorFromString(@"setOrientation:");//==SEL selector = @selector(setOrientation:);
         /**
@@ -181,6 +242,8 @@ static NSInteger count=0;
 //    NSLog(@"%f",self.searchControllerView.frame.size.width);
     [self.tableView reloadData];
 }
+
+
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSLog(@"_______________UISearchResultsUpdating______________");
@@ -342,6 +405,11 @@ static NSInteger count=0;
             }
         
     }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
 }
 
 @end

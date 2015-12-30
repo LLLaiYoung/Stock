@@ -13,7 +13,6 @@
 		870CB37D1C2D9E7E007E191C /* DetailStockController.m in Sources */ = {isa = PBXBuildFile; fileRef = 870CB3731C2D9E7E007E191C /* DetailStockController.m */; };
 		870CB37E1C2D9E7E007E191C /* HomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = 870CB3751C2D9E7E007E191C /* HomePage.m */; };
 		870CB37F1C2D9E7E007E191C /* K_LineGraphController.m in Sources */ = {isa = PBXBuildFile; fileRef = 870CB3771C2D9E7E007E191C /* K_LineGraphController.m */; };
-		870CB3801C2D9E7E007E191C /* SearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 870CB3791C2D9E7E007E191C /* SearchController.m */; };
 		870CB3811C2D9E7E007E191C /* TimeLineController.m in Sources */ = {isa = PBXBuildFile; fileRef = 870CB37B1C2D9E7E007E191C /* TimeLineController.m */; };
 		870CB3841C2D9FFC007E191C /* DropdownMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 870CB3831C2D9FFC007E191C /* DropdownMenuView.m */; };
 		870CB3861C2DA018007E191C /* DropdownMenuView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 870CB3851C2DA018007E191C /* DropdownMenuView.xib */; };
@@ -25,6 +24,9 @@
 		878CC0081C29003800D25E0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 878CBFFE1C29003800D25E0F /* main.m */; };
 		878CC0091C29003800D25E0F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 878CC0001C29003800D25E0F /* LaunchScreen.storyboard */; };
 		878CC00A1C29003800D25E0F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 878CC0021C29003800D25E0F /* Main.storyboard */; };
+		87D9E0381C33D8410088745B /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 87D9E0371C33D8410088745B /* Reachability.m */; };
+		87D9E03A1C34103F0088745B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87D9E0391C34103F0088745B /* SystemConfiguration.framework */; };
+		87D9E03D1C341C800088745B /* CheckNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 87D9E03C1C341C800088745B /* CheckNetworking.m */; };
 		87FC27791C2A2D4800A7A4F9 /* DownLoadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 87FC27781C2A2D4800A7A4F9 /* DownLoadManager.m */; };
 		87FC277C1C2A359900A7A4F9 /* Stock.m in Sources */ = {isa = PBXBuildFile; fileRef = 87FC277B1C2A359900A7A4F9 /* Stock.m */; };
 		87FE1DCF1C2E926D0087AD25 /* StockSearchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 87FE1DCE1C2E926D0087AD25 /* StockSearchCell.m */; };
@@ -46,8 +48,6 @@
 		870CB3751C2D9E7E007E191C /* HomePage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomePage.m; sourceTree = "<group>"; };
 		870CB3761C2D9E7E007E191C /* K_LineGraphController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = K_LineGraphController.h; sourceTree = "<group>"; };
 		870CB3771C2D9E7E007E191C /* K_LineGraphController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = K_LineGraphController.m; sourceTree = "<group>"; };
-		870CB3781C2D9E7E007E191C /* SearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchController.h; sourceTree = "<group>"; };
-		870CB3791C2D9E7E007E191C /* SearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchController.m; sourceTree = "<group>"; };
 		870CB37A1C2D9E7E007E191C /* TimeLineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeLineController.h; sourceTree = "<group>"; };
 		870CB37B1C2D9E7E007E191C /* TimeLineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeLineController.m; sourceTree = "<group>"; };
 		870CB3821C2D9FFC007E191C /* DropdownMenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DropdownMenuView.h; sourceTree = "<group>"; };
@@ -67,6 +67,11 @@
 		878CBFFE1C29003800D25E0F /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		878CC0011C29003800D25E0F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		878CC0031C29003800D25E0F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		87D9E0361C33D8410088745B /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		87D9E0371C33D8410088745B /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		87D9E0391C34103F0088745B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		87D9E03B1C341C800088745B /* CheckNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckNetworking.h; sourceTree = "<group>"; };
+		87D9E03C1C341C800088745B /* CheckNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckNetworking.m; sourceTree = "<group>"; };
 		87FC27771C2A2D4800A7A4F9 /* DownLoadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownLoadManager.h; sourceTree = "<group>"; };
 		87FC27781C2A2D4800A7A4F9 /* DownLoadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownLoadManager.m; sourceTree = "<group>"; };
 		87FC277A1C2A359900A7A4F9 /* Stock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stock.h; sourceTree = "<group>"; };
@@ -81,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87D9E03A1C34103F0088745B /* SystemConfiguration.framework in Frameworks */,
 				B4D057FDF4410583104BF75C /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -100,8 +106,6 @@
 		870CB36F1C2D9E7E007E191C /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				870CB3781C2D9E7E007E191C /* SearchController.h */,
-				870CB3791C2D9E7E007E191C /* SearchController.m */,
 				870CB3741C2D9E7E007E191C /* HomePage.h */,
 				870CB3751C2D9E7E007E191C /* HomePage.m */,
 				870CB3701C2D9E7E007E191C /* AddOrQueryStockController.h */,
@@ -150,7 +154,7 @@
 		878CBFD91C28FF6600D25E0F /* Stock */ = {
 			isa = PBXGroup;
 			children = (
-				870CB38A1C2DA4A7007E191C /* Extension */,
+				87D9E0331C33D7F90088745B /* Vender */,
 				878CBFF91C29003800D25E0F /* Other */,
 				878CBFF81C29003800D25E0F /* Models */,
 				878CBFFF1C29003800D25E0F /* Views */,
@@ -168,6 +172,8 @@
 				870615EB1C2AD6C500A98150 /* DataBaseManager.m */,
 				87FC277A1C2A359900A7A4F9 /* Stock.h */,
 				87FC277B1C2A359900A7A4F9 /* Stock.m */,
+				87D9E03B1C341C800088745B /* CheckNetworking.h */,
+				87D9E03C1C341C800088745B /* CheckNetworking.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -200,9 +206,37 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		87D9E0331C33D7F90088745B /* Vender */ = {
+			isa = PBXGroup;
+			children = (
+				87D9E0351C33D8250088745B /* JudgeNetWorking */,
+				870CB38A1C2DA4A7007E191C /* Extension */,
+			);
+			name = Vender;
+			sourceTree = "<group>";
+		};
+		87D9E0341C33D80C0088745B /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		87D9E0351C33D8250088745B /* JudgeNetWorking */ = {
+			isa = PBXGroup;
+			children = (
+				87D9E0361C33D8410088745B /* Reachability.h */,
+				87D9E0371C33D8410088745B /* Reachability.m */,
+				87D9E0341C33D80C0088745B /* New Group */,
+			);
+			name = JudgeNetWorking;
+			sourceTree = "<group>";
+		};
 		B6A22F58D1F5D59FD19E6FCB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				87D9E0391C34103F0088745B /* SystemConfiguration.framework */,
 				39DA88DF89F381FB3D205BAF /* libPods.a */,
 			);
 			name = Frameworks;
@@ -331,6 +365,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87D9E03D1C341C800088745B /* CheckNetworking.m in Sources */,
 				878CC0081C29003800D25E0F /* main.m in Sources */,
 				870CB37E1C2D9E7E007E191C /* HomePage.m in Sources */,
 				870CB37C1C2D9E7E007E191C /* AddOrQueryStockController.m in Sources */,
@@ -347,7 +382,7 @@
 				870CB3891C2DA3C5007E191C /* DropdownMenuController.m in Sources */,
 				870CB3811C2D9E7E007E191C /* TimeLineController.m in Sources */,
 				870CB3901C2DA4A7007E191C /* UIView+Extension.m in Sources */,
-				870CB3801C2D9E7E007E191C /* SearchController.m in Sources */,
+				87D9E0381C33D8410088745B /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
