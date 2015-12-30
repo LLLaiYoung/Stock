@@ -11,6 +11,7 @@
  *  网络查询数据
  *  分时线,日K线,周K线,月K线
  *  屏幕的旋转
+ *  下拉菜单
  *  主界面
  ![alt text]( /Users/Chairman/Documents/IOS/Github/Stock/IMG_0800.PNG "主界面")
 
