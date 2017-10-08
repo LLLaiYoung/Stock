@@ -22,6 +22,7 @@ UISearchResultsUpdating
 @property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic, strong) NSMutableArray *queryList;
 @property (nonatomic, strong) MBProgressHUD *mbProgressHUD;
+@property (nonatomic, strong) UISearchBar *searchBar;
 @end
 
 @implementation AddOrQueryStockController
@@ -32,9 +33,16 @@ UISearchResultsUpdating
     self.navigationItem.title = @"新增自选股";
     self.tableView.tableFooterView = [UIView new];
     [self search];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    if (@available(iOS 11.0, *)) {
+        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        self.tableView.contentInset = UIEdgeInsetsZero;
+        self.tableView.scrollIndicatorInsets = self.tableView.contentInset;
+    }
 }
 - (void)search {
-    self.searchController = [[UISearchController alloc]initWithSearchResultsController:nil];//初始化搜索控制器WithSearchResultsController:表示搜索的结果使用什么控制器展示出来  nil就表示用自带的，用其他的就需要push出来一个
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];//初始化搜索控制器WithSearchResultsController:表示搜索的结果使用什么控制器展示出来  nil就表示用自带的，用其他的就需要push出来一个
     self.searchController.searchBar.keyboardType = UIKeyboardTypeNumberPad;
     self.searchController.searchResultsUpdater = self;//相当于设置searchController控制器的代理
     self.searchController.searchBar.delegate = self;
@@ -44,7 +52,7 @@ UISearchResultsUpdating
     self.searchController.searchBar.placeholder = @"请输入股票代码";
 //    [self.searchControllerView addSubview:self.searchController.searchBar];
     self.tableView.tableHeaderView = self.searchController.searchBar;
-    
+    self.searchBar = self.searchController.searchBar;
     self.definesPresentationContext = YES; //不加，则在没有点击取消的情况下直接返回会黑屏
 }
 #pragma mark - 生命周期
@@ -60,6 +68,15 @@ UISearchResultsUpdating
 
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    NSLog(@"searchControllerFrame = %@",NSStringFromCGRect(searchController.searchBar.frame));
+    CGRect frame = CGRectZero;
+    if (searchController.isActive) {
+        frame = searchController.searchBar.frame;
+    } else {
+        frame.size.height = 56.0f;
+    }
+    self.tableView.tableHeaderView.frame = frame;
+    
     if (searchController.searchBar.text.length==6) {
         [self.queryList removeAllObjects];
         NSLog(@"%@",searchController.searchBar.text);
@@ -79,6 +96,9 @@ UISearchResultsUpdating
                 [self.tableView reloadData];
             }];
         }
+    }
+    if (!searchController.isActive) {
+        [self.queryList removeAllObjects];
     }
     [self.tableView reloadData];
 }
